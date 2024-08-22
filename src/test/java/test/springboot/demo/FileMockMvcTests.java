@@ -1,9 +1,5 @@
 package test.springboot.demo;
 
-import java.nio.file.Paths;
-import java.util.stream.Stream;
-
-import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 
@@ -21,10 +17,12 @@ import static org.mockito.BDDMockito.then;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-
+/**
+ * 使用MockMvc测试
+ **/
 @AutoConfigureMockMvc
 @SpringBootTest
-public class FileUploadTests {
+public class FileMockMvcTests {
 
 	@Autowired
 	private MockMvc mvc;
@@ -32,29 +30,24 @@ public class FileUploadTests {
 	@MockBean
 	private StorageService storageService;
 
-	@Test
-	public void shouldListAllFiles() throws Exception {
-		given(this.storageService.loadAll())
-				.willReturn(Stream.of(Paths.get("first.txt"), Paths.get("second.txt")));
-
-		this.mvc.perform(get("/")).andExpect(status().isOk())
-				.andExpect(model().attribute("files",
-						Matchers.contains("http://localhost/files/first.txt",
-								"http://localhost/files/second.txt")));
-	}
-
+	/**
+	 * 测试上传文件
+	 **/
 	@Test
 	public void shouldSaveUploadedFile() throws Exception {
 		MockMultipartFile multipartFile = new MockMultipartFile("file", "test.txt",
-				"text/plain", "Spring Framework".getBytes());
-		this.mvc.perform(multipart("/").file(multipartFile))
-				.andExpect(status().isFound())
-				.andExpect(header().string("Location", "/"));
+				"text/plain", "hello world".getBytes());
+		this.mvc.perform(multipart("/upload").file(multipartFile))
+				.andExpect(status().isOk());
 
 		then(this.storageService).should().store(multipartFile);
 	}
 
-	@SuppressWarnings("unchecked")
+	/**
+	 * 测试文件不存在时抛出404错误
+	 * @throws Exception
+	 */
+	@SuppressWarnings("unchecked") // 抑制编译器对方法体内可能出现的未经检查的警告
 	@Test
 	public void should404WhenMissingFile() throws Exception {
 		given(this.storageService.loadAsResource("test.txt"))

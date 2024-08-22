@@ -36,7 +36,10 @@ public class FileUploadController {
     // @Autowired
     // private StorageService storageService;
 
-    // 做代理，客户端可下载资源或查看资源
+    /**
+     * 做代理，客户端可下载资源或查看资源
+     * @return 文件后缀
+     **/
     @GetMapping(value = {"/files/{filename:.+}", "/files/{download:.+}/{filename:.+}"})
     @ResponseBody
     public ResponseEntity<Resource> serveFile(@PathVariable(required = false) String download, @PathVariable String filename) {
@@ -95,7 +98,6 @@ public class FileUploadController {
 
     /**
      * 上传文件
-     * @param file
      * @return 上传是否成功
      */
     @PostMapping("/upload")

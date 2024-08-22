@@ -3,16 +3,12 @@ package test.springboot.demo.storage;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.condition.EnabledOnOs;
-import org.junit.jupiter.api.condition.OS;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import test.springboot.demo.service.impl.FileStorageServiceImpl;
 import test.springboot.demo.exception.StorageException;
 import test.springboot.demo.config.StorageConfigure;
 
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.Random;
 
 import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
@@ -29,13 +25,13 @@ public class FileStorageServiceImplTests {
 
 	@BeforeEach
 	public void init() {
-		properties.setLocation("storage/files/" + Math.abs(new Random().nextLong()));
+		properties.setLocation("src/main/resources/localStorage/files/" + Math.abs(new Random().nextLong()));
 		service = new FileStorageServiceImpl(properties);
 		service.init();
 	}
 	@AfterEach
 	public void terminate() {
-		properties.setLocation("storage/files/");
+		properties.setLocation("src/main/resources/localStorage/files/");
 		service = new FileStorageServiceImpl(properties);
 		service.deleteAll();
 	}
@@ -71,7 +67,7 @@ public class FileStorageServiceImplTests {
 
 	@Test
 	public void savePermitted() {
-		service.store(new MockMultipartFile("amdin", "storage/../admin.txt",
+		service.store(new MockMultipartFile("amdin", "localStorage/../admin.txt",
 				MediaType.TEXT_PLAIN_VALUE, "I am cool boy！".getBytes()));
 	}
 

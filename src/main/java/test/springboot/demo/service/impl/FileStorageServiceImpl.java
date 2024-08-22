@@ -153,7 +153,7 @@ public class FileStorageServiceImpl implements StorageService {
     }
 
     /**
-     *  初始化下载路径
+     * 初始化下载路径
      * @exception StorageException 存储异常
      **/
     @Override
